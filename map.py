@@ -55,24 +55,25 @@ last_distance = 0 # distance to the goal
 class Car(Widget):
 
     angle = NumericProperty(0)
-    rotation = NumericProperty(0)
+    rotation = NumericProperty(0) # The last rotation
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
-    sensor1_x = NumericProperty(0)
+    sensor1_x = NumericProperty(0) # In front of the Car
     sensor1_y = NumericProperty(0)
     sensor1 = ReferenceListProperty(sensor1_x, sensor1_y)
-    sensor2_x = NumericProperty(0)
+    sensor2_x = NumericProperty(0) # At the left of the Car
     sensor2_y = NumericProperty(0)
     sensor2 = ReferenceListProperty(sensor2_x, sensor2_y)
-    sensor3_x = NumericProperty(0)
+    sensor3_x = NumericProperty(0) # At the right of the Car
     sensor3_y = NumericProperty(0)
     sensor3 = ReferenceListProperty(sensor3_x, sensor3_y)
-    signal1 = NumericProperty(0)
-    signal2 = NumericProperty(0)
-    signal3 = NumericProperty(0)
+    signal1 = NumericProperty(0) # Signal received by sensor 1 , The density of sand around sensor 1
+    signal2 = NumericProperty(0) # Signal received by sensor 2 , The density of sand around sensor 2
+    signal3 = NumericProperty(0) # Signal received by sensor 3 , The density of sand around sensor 3
 
-    def move(self, rotation):
+    # Going to the left, right or straight
+    def move(self, rotation): 
         self.pos = Vector(*self.velocity) + self.pos
         self.rotation = rotation
         self.angle = self.angle + self.rotation
@@ -82,6 +83,8 @@ class Car(Widget):
         self.signal1 = int(np.sum(sand[int(self.sensor1_x)-10:int(self.sensor1_x)+10, int(self.sensor1_y)-10:int(self.sensor1_y)+10]))/400.
         self.signal2 = int(np.sum(sand[int(self.sensor2_x)-10:int(self.sensor2_x)+10, int(self.sensor2_y)-10:int(self.sensor2_y)+10]))/400.
         self.signal3 = int(np.sum(sand[int(self.sensor3_x)-10:int(self.sensor3_x)+10, int(self.sensor3_y)-10:int(self.sensor3_y)+10]))/400.
+
+        #Punishing the agent when it's getting to close to the wall.
         if self.sensor1_x>longueur-10 or self.sensor1_x<10 or self.sensor1_y>largeur-10 or self.sensor1_y<10:
             self.signal1 = 1.
         if self.sensor2_x>longueur-10 or self.sensor2_x<10 or self.sensor2_y>largeur-10 or self.sensor2_y<10:
