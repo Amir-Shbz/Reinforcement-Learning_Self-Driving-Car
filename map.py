@@ -16,7 +16,8 @@ from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProper
 from kivy.vector import Vector
 from kivy.clock import Clock
 
-# Importing the Dqn object from our AI in ai.py
+# Importing the Dqn object from our AI in ai.py which is the brain of our self-driving car
+# Deep Q-Learning Network
 from ai import Dqn
 
 # Adding this line if we don't want the right click to put a red point
@@ -29,15 +30,15 @@ n_points = 0
 length = 0
 
 # Getting our AI, which we call "brain", and that contains our neural network that represents our Q-function
-brain = Dqn(5,3,0.9)
-action2rotation = [0,20,-20]
-last_reward = 0
+brain = Dqn(5,3,0.9) # states, number of actions, gamma parameter,
+action2rotation = [0,20,-20] # straight, right, left
+last_reward = 0 # if the car go on to some sand , reward is negative and if it doesn't reward is positive
 scores = []
 
 # Initializing the map
 first_update = True
 def init():
-    global sand
+    global sand # It is going to be an array which contains the pixels
     global goal_x
     global goal_y
     global first_update
@@ -47,12 +48,12 @@ def init():
     first_update = False
 
 # Initializing the last distance
-last_distance = 0
+last_distance = 0 # distance to the goal
 
 # Creating the car class
 
 class Car(Widget):
-    
+
     angle = NumericProperty(0)
     rotation = NumericProperty(0)
     velocity_x = NumericProperty(0)
