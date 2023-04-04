@@ -73,7 +73,7 @@ class Car(Widget):
     signal3 = NumericProperty(0) # Signal received by sensor 3 , The density of sand around sensor 3
 
     # Going to the left, right or straight
-    def move(self, rotation): 
+    def move(self, rotation):
         self.pos = Vector(*self.velocity) + self.pos
         self.rotation = rotation
         self.angle = self.angle + self.rotation
@@ -84,7 +84,7 @@ class Car(Widget):
         self.signal2 = int(np.sum(sand[int(self.sensor2_x)-10:int(self.sensor2_x)+10, int(self.sensor2_y)-10:int(self.sensor2_y)+10]))/400.
         self.signal3 = int(np.sum(sand[int(self.sensor3_x)-10:int(self.sensor3_x)+10, int(self.sensor3_y)-10:int(self.sensor3_y)+10]))/400.
 
-        #Punishing the agent when it's getting to close to the wall.
+        # Punishing the agent when it's getting to close to the wall.
         if self.sensor1_x>longueur-10 or self.sensor1_x<10 or self.sensor1_y>largeur-10 or self.sensor1_y<10:
             self.signal1 = 1.
         if self.sensor2_x>longueur-10 or self.sensor2_x<10 or self.sensor2_y>largeur-10 or self.sensor2_y<10:
@@ -131,8 +131,10 @@ class Game(Widget):
         xx = goal_x - self.car.x
         yy = goal_y - self.car.y
         orientation = Vector(*self.car.velocity).angle((xx,yy))/180.
+
+        # Inputs of our encoded vector which go into the network
         last_signal = [self.car.signal1, self.car.signal2, self.car.signal3, orientation, -orientation]
-        action = brain.update(last_reward, last_signal)
+        action = brain.update(last_reward, last_signal) # It is the output of the nureal network
         scores.append(brain.score())
         rotation = action2rotation[action]
         self.car.move(rotation)
@@ -141,15 +143,17 @@ class Game(Widget):
         self.ball2.pos = self.car.sensor2
         self.ball3.pos = self.car.sensor3
 
+        # When the Car goes to some sand :
         if sand[int(self.car.x),int(self.car.y)] > 0:
             self.car.velocity = Vector(1, 0).rotate(self.car.angle)
-            last_reward = -1
+            last_reward = -1 # Bad reward
         else: # otherwise
             self.car.velocity = Vector(6, 0).rotate(self.car.angle)
             last_reward = -0.2
             if distance < last_distance:
                 last_reward = 0.1
 
+        # When the car gets to close to one of the edges :
         if self.car.x < 10:
             self.car.x = 10
             last_reward = -1
@@ -163,12 +167,13 @@ class Game(Widget):
             self.car.y = self.height - 10
             last_reward = -1
 
+        # Change the Goal :
         if distance < 100:
             goal_x = self.width-goal_x
             goal_y = self.height-goal_y
         last_distance = distance
 
-# Adding the painting tools
+# Adding the painting tools , related to Kivy .
 
 class MyPaintWidget(Widget):
 
