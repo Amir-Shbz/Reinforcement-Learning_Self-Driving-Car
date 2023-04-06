@@ -20,5 +20,12 @@ class Network(nn.Module):
         super(Network, self).__init__()
         self.input_size = input_size
         self.nb_action = nb_action
-        self.fc1 = nn.Linear(input_size, 30) # Fully Connections
+        self.fc1 = nn.Linear(input_size, 30) # Fully Connections, We have 30 hidden Nodes in hidden layers.
         self.fc2 = nn.Linear(30, nb_action)
+
+    def forward(self, state):
+
+        # activate hidden neurns
+        x = F.relu(self.fc1(state))
+        q_values = self.fc2(x)
+        return q_values
